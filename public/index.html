@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CS4241 Assignment 2</title>
+    <meta charset="utf-8" />
+    <script src="js/main.js" defer></script>
+    <!-- defer makes sure the script is loaded after the HTML is parsed -->
+    <link rel="stylesheet" href="css/main.css" />
+
+    <!-- get rid of favicon error -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  </head>
+  <body>
+    <h1 style="display: flex; justify-content: center; font-size: 35px;">~Todo List Application~</h1>
+    <div class="main">
+      <!-- Form -->
+      <form id="TodoForm">
+        <h2 style="font-size: 25px; margin-top: 0px; margin-bottom: 0px">Add a To-do</h2>
+        <div style="margin: 0; height: 2px; background-color: #727A5C;"></div>
+        <label for="todoName">What's your to-do item called?</label>
+        <input type="text" id="todoName" placeholder="Item Name" required />
+
+        <label for="todoDeadline">When's your to-do item due?:</label>
+        <input type="date" id="todoDeadline" required />
+
+        <label for="todoDeadline">How important is your item?:</label>
+        <div>
+          <input type="radio" name="importance" value="low" checked />
+          <label for="todoDeadline">Low</label>
+        </div>
+        <div>
+          <input type="radio" name="importance" value="medium" />
+          <label for="todoDeadline">Medium</label>
+        </div>
+        <div>
+          <input type="radio" name="importance" value="high" />
+          <label for="todoDeadline">High</label>
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+
+      <!-- Table -->
+      <div>
+        <table id="todoTable" cellspacing="0" cellpadding="6">
+          <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 20%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 25%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Deadline</th>
+              <th>Importance</th>
+              <th>Days Left</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="todoTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

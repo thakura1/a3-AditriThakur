@@ -1,0 +1,85 @@
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background-color: #BFCF95;
+  font-family: "Sansation", sans-serif;
+  color: #47502F;
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+textarea,
+input[type="text"],
+input[type="date"],
+select {
+  font-family: "Sansation", sans-serif;
+  font-size: 18px;
+  color: #47502F;
+  padding: 5px 7px;
+  border: 1px solid #B0B89A;
+  border-radius: 8px;
+  background-color: #F9FAF5;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+button {
+  font-family: "Sansation", sans-serif;
+  font-size: 18px;
+  background-color: #727A5C;
+  color: #F0F1E3;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 3fr;
+  min-height: 0;            
+}
+
+#TodoForm {
+  font-size: 18px;
+  border: 2px solid #727A5C;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+#todoTable {
+  border: 2px solid #727A5C;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 18px;
+  line-height: 1.35;
+  /* Line Up */
+  font-variant-numeric: tabular-nums;
+}
+
+#todoTable th,
+#todoTable td {
+  padding: .6rem .75rem;
+  border-bottom: 1px solid #727A5C;
+  vertical-align: top;
+  /* Incase overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#todoTable th {
+  font-size: 18px;
+}
+
+#todoTable th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 25px;
+}
