@@ -4,15 +4,40 @@
     <title>CS4241 Assignment 2</title>
     <meta charset="utf-8" />
     <script src="js/main.js" defer></script>
-    <!-- defer makes sure the script is loaded after the HTML is parsed -->
     <link rel="stylesheet" href="css/main.css" />
-
-    <!-- get rid of favicon error -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <style>
+      /* Fixed logout button */
+      #logoutBtn {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        display: none; /* hidden until logged in */
+        z-index: 1000;
+      }
+
+      /* Login link also in top-right before login */
+      #loginLink {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 1000;
+      }
+
+      /* Hide todo app until logged in */
+      #todoApp {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <h1 style="display: flex; justify-content: center; font-size: 35px;">~Todo List Application~</h1>
-    <div class="main">
+
+    <!-- Login/Logout -->
+    <a href="/auth/github" id="loginLink">Log in with GitHub</a>
+    <button id="logoutBtn">Logout</button>
+
+    <div class="main" id="todoApp">
       <!-- Form -->
       <form id="TodoForm">
         <h2 style="font-size: 25px; margin-top: 0px; margin-bottom: 0px">Add a To-do</h2>
