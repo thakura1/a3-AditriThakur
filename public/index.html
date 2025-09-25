@@ -1,92 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CS4241 Assignment 2</title>
     <meta charset="utf-8" />
-    <script src="js/main.js" defer></script>
+    <title>CS4241 Assignment 2</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/main.css" />
+    <script src="js/main.js" defer></script>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
-    <style>
-      /* Fixed logout button */
-      #logoutBtn {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        display: none; /* hidden until logged in */
-        z-index: 1000;
-      }
-
-      /* Login link also in top-right before login */
-      #loginLink {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        z-index: 1000;
-      }
-
-      /* Hide todo app until logged in */
-      #todoApp {
-        display: none;
-      }
-    </style>
   </head>
   <body>
-    <h1 style="display: flex; justify-content: center; font-size: 35px;">~Todo List Application~</h1>
+    <header class="text-center my-4">
+      <h1>~Todo List Application~</h1>
+      <a href="/auth/github" id="loginLink" class="btn btn-primary me-2">Log in with GitHub</a>
+      <button id="logoutBtn" class="btn btn-danger">Logout</button>
+    </header>
 
-    <!-- Login/Logout -->
-    <a href="/auth/github" id="loginLink">Log in with GitHub</a>
-    <button id="logoutBtn">Logout</button>
+    <main class="container-fluid flex-fill" id="todoApp">
+      <div class="row g-4">
+        <!-- Form Column -->
+        <div class="col-lg-4 col-md-12">
+          <form id="TodoForm" class="p-4 rounded shadow">
+            <h2 class="h5 mb-3">Add a To-do</h2>
 
-    <div class="main" id="todoApp">
-      <!-- Form -->
-      <form id="TodoForm">
-        <h2 style="font-size: 25px; margin-top: 0px; margin-bottom: 0px">Add a To-do</h2>
-        <div style="margin: 0; height: 2px; background-color: #727A5C;"></div>
-        <label for="todoName">What's your to-do item called?</label>
-        <input type="text" id="todoName" placeholder="Item Name" required />
+            <div class="mb-3">
+              <label for="todoName" class="form-label">What's your to-do item called?</label>
+              <input type="text" id="todoName" class="form-control" placeholder="Item Name" required>
+            </div>
 
-        <label for="todoDeadline">When's your to-do item due?:</label>
-        <input type="date" id="todoDeadline" required />
+            <div class="mb-3">
+              <label for="todoDeadline" class="form-label">When's your to-do item due?</label>
+              <input type="date" id="todoDeadline" class="form-control" required>
+            </div>
 
-        <label for="todoDeadline">How important is your item?:</label>
-        <div>
-          <input type="radio" name="importance" value="low" checked />
-          <label for="todoDeadline">Low</label>
+            <div class="mb-3">
+              <label class="form-label">How important is your item?</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="importance" value="low" checked>
+                <label class="form-check-label">Low</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="importance" value="medium">
+                <label class="form-check-label">Medium</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="importance" value="high">
+                <label class="form-check-label">High</label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Submit</button>
+          </form>
         </div>
-        <div>
-          <input type="radio" name="importance" value="medium" />
-          <label for="todoDeadline">Medium</label>
-        </div>
-        <div>
-          <input type="radio" name="importance" value="high" />
-          <label for="todoDeadline">High</label>
-        </div>
 
-        <button type="submit">Submit</button>
-      </form>
-
-      <!-- Table -->
-      <div>
-        <table id="todoTable">
-          <colgroup>
-            <col style="width: 25%" />
-            <col style="width: 20%" />
-            <col style="width: 15%" />
-            <col style="width: 15%" />
-            <col style="width: 25%" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Deadline</th>
-              <th>Importance</th>
-              <th>Days Left</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="todoTbody"></tbody>
-        </table>
+        <!-- Table Column -->
+        <div class="col-lg-8 col-md-12">
+          <div class="table-wrapper">
+            <table id="todoTable" class="table table-bordered table-hover">
+              <colgroup>
+                <col style="width: 25%">
+                <col style="width: 20%">
+                <col style="width: 15%">
+                <col style="width: 15%">
+                <col style="width: 25%">
+              </colgroup>
+              <thead class="table-light">
+                <tr>
+                  <th>Name</th>
+                  <th>Deadline</th>
+                  <th>Importance</th>
+                  <th>Days Left</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="todoTbody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   </body>
 </html>

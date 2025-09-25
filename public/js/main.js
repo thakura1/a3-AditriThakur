@@ -59,7 +59,7 @@ function renderTable(todos) {
   todoTbody.innerHTML = ""; // Clear
   todos.forEach((t) => {
     const tr = document.createElement("tr"); // Row
-    tr.dataset.id = t._id || t.id;
+    tr.dataset.id = t._id;
     tr.dataset.name = t.name;
     tr.dataset.deadline = t.deadline;
     tr.dataset.importance = t.importance;
