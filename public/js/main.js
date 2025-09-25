@@ -3,7 +3,7 @@ const loginLink = document.getElementById("loginLink");
 const logoutBtn = document.getElementById("logoutBtn");
 const todoApp = document.getElementById("todoApp");
 const todoForm = document.getElementById("TodoForm");
-const todoTbody = document.querySelector("#todoTbody");
+const todoTbody = document.getElementById("todoTbody");
 const usernameDisplay = document.getElementById("usernameDisplay");
 
 // Check authentication
@@ -42,7 +42,7 @@ logoutBtn.addEventListener("click", async () => {
   todoApp.style.display = "none";
 });
 
-// Fetch todos and render table
+// Fetch todos
 async function fetchTodosAndRender() {
   const res = await fetch("/todos", { credentials: "include" });
   if (res.status === 401) return checkAuth();
@@ -56,61 +56,48 @@ function renderTable(todos) {
   todos.forEach((t) => {
     const tr = document.createElement("tr");
     tr.dataset.id = t._id;
-    tr.dataset.name = t.name;
-    tr.dataset.deadline = t.deadline;
-    tr.dataset.importance = t.importance;
 
-    const tdName = document.createElement("td"); tdName.textContent = t.name;
-    const tdDeadline = document.createElement("td"); tdDeadline.textContent = t.deadline.split("T")[0];
-    const tdImportance = document.createElement("td"); tdImportance.textContent = t.importance;
-    const tdDays = document.createElement("td"); tdDays.textContent = t.daysLeft ?? "—";
-    const tdActions = document.createElement("td");
-    tdActions.innerHTML = `<button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button>`;
-
-    tr.append(tdName, tdDeadline, tdImportance, tdDays, tdActions);
+    tr.innerHTML = `
+      <td>${t.name}</td>
+      <td>${t.deadline.split("T")[0]}</td>
+      <td>${t.importance}</td>
+      <td>${t.daysLeft ?? "—"}</td>
+      <td>
+        <button class="btn btn-sm btn-warning edit-btn">Edit</button>
+        <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+      </td>
+    `;
     todoTbody.appendChild(tr);
   });
 }
 
-// Edit row
+// Enter edit mode
 function enterEditMode(tr) {
-  const { id, name, deadline, importance } = tr.dataset;
-  tr.innerHTML = "";
+  const id = tr.dataset.id;
+  const cells = tr.querySelectorAll("td");
+  const [name, deadline, importance] = [cells[0].textContent, cells[1].textContent, cells[2].textContent];
 
-  const tdName = document.createElement("td");
-  const nameInput = document.createElement("input");
-  nameInput.type = "text";
-  nameInput.value = name;
-  tdName.appendChild(nameInput);
-
-  const tdDeadline = document.createElement("td");
-  const dateInput = document.createElement("input");
-  dateInput.type = "date";
-  dateInput.value = deadline.split("T")[0];
-  tdDeadline.appendChild(dateInput);
-
-  const tdImportance = document.createElement("td");
-  const select = document.createElement("select");
-  ["low", "medium", "high"].forEach(lvl => {
-    const opt = document.createElement("option");
-    opt.value = lvl;
-    opt.textContent = lvl;
-    if (lvl === importance) opt.selected = true;
-    select.appendChild(opt);
-  });
-  tdImportance.appendChild(select);
-
-  const tdDays = document.createElement("td"); tdDays.textContent = "—";
-  const tdActions = document.createElement("td");
-  tdActions.innerHTML = `<button class="save-btn">Save</button> <button class="cancel-btn">Cancel</button>`;
-
-  tr.append(tdName, tdDeadline, tdImportance, tdDays, tdActions);
+  tr.innerHTML = `
+    <td><input type="text" class="form-control form-control-sm name-input" value="${name}"></td>
+    <td><input type="date" class="form-control form-control-sm deadline-input" value="${deadline}"></td>
+    <td>
+      <select class="form-select form-select-sm importance-select">
+        <option value="low" ${importance === "low" ? "selected" : ""}>Low</option>
+        <option value="medium" ${importance === "medium" ? "selected" : ""}>Medium</option>
+        <option value="high" ${importance === "high" ? "selected" : ""}>High</option>
+      </select>
+    </td>
+    <td>—</td>
+    <td>
+      <button class="btn btn-sm btn-success save-btn">Save</button>
+      <button class="btn btn-sm btn-secondary cancel-btn">Cancel</button>
+    </td>
+  `;
   tr.dataset.id = id;
 }
 
 // Update todo
 async function updateTodo(id, name, deadline, importance) {
-  if (!id) return alert("Invalid ID");
   const res = await fetch("/todos/update", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -123,7 +110,6 @@ async function updateTodo(id, name, deadline, importance) {
 
 // Delete todo
 async function deleteTodo(id) {
-  if (!id) return alert("Invalid ID");
   const res = await fetch("/todos/delete", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -137,8 +123,8 @@ async function deleteTodo(id) {
 // Submit form
 async function submit(event) {
   event.preventDefault();
-  const name = document.querySelector("#todoName").value.trim();
-  const deadline = document.querySelector("#todoDeadline").value;
+  const name = document.getElementById("todoName").value.trim();
+  const deadline = document.getElementById("todoDeadline").value;
   const importance = document.querySelector('input[name="importance"]:checked').value;
 
   const res = await fetch("/todos/submit", {
@@ -153,7 +139,7 @@ async function submit(event) {
   document.querySelector('input[name="importance"][value="low"]').checked = true;
 }
 
-// Table button events
+// Handle table button clicks
 todoTbody.addEventListener("click", async (e) => {
   const btn = e.target;
   const tr = btn.closest("tr");
@@ -161,15 +147,18 @@ todoTbody.addEventListener("click", async (e) => {
 
   const id = tr.dataset.id;
 
-  if (btn.classList.contains("delete-btn")) await deleteTodo(id);
   if (btn.classList.contains("edit-btn")) enterEditMode(tr);
   if (btn.classList.contains("cancel-btn")) fetchTodosAndRender();
   if (btn.classList.contains("save-btn")) {
-    const [nameInput, dateInput, select] = tr.querySelectorAll("input, select");
-    await updateTodo(id, nameInput.value.trim(), dateInput.value, select.value);
+    const nameInput = tr.querySelector(".name-input");
+    const deadlineInput = tr.querySelector(".deadline-input");
+    const importanceSelect = tr.querySelector(".importance-select");
+    await updateTodo(id, nameInput.value.trim(), deadlineInput.value, importanceSelect.value);
   }
+  if (btn.classList.contains("delete-btn")) await deleteTodo(id);
 });
 
 todoForm.addEventListener("submit", submit);
 window.onload = checkAuth;
+
 

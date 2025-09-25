@@ -12,53 +12,56 @@
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   </head>
   <body>
-    <header class="text-center my-4">
+    <header class="text-center my-4" role="banner">
       <h1>~Todo List Application~</h1>
-      <a href="/auth/github" id="loginLink" class="btn btn-primary me-2">Log in with GitHub</a>
+      <a href="/auth/github" id="loginLink" class="btn btn-primary me-2" role="button">Log in with GitHub</a>
       <button id="logoutBtn" class="btn btn-danger">Logout</button>
     </header>
 
-    <main class="container-fluid flex-fill" id="todoApp">
+    <main class="container-fluid flex-fill" id="todoApp" role="main">
       <div class="row g-4">
         <!-- Form Column -->
-        <div class="col-lg-4 col-md-12">
-          <form id="TodoForm" class="p-4 rounded shadow">
-            <h2 class="h5 mb-3">Add a To-do</h2>
+        <section class="col-lg-4 col-md-12" aria-labelledby="formHeading">
+          <form id="TodoForm" class="p-4 rounded shadow" aria-describedby="formDesc">
+            <h2 id="formHeading" class="h5 mb-3">Add a To-do</h2>
+            <p id="formDesc" class="visually-hidden">Add a new todo item with a name, deadline, and importance level</p>
 
             <div class="mb-3">
               <label for="todoName" class="form-label">What's your to-do item called?</label>
-              <input type="text" id="todoName" class="form-control" placeholder="Item Name" required>
+              <input type="text" id="todoName" class="form-control" placeholder="Item Name" required aria-required="true">
             </div>
 
             <div class="mb-3">
               <label for="todoDeadline" class="form-label">When's your to-do item due?</label>
-              <input type="date" id="todoDeadline" class="form-control" required>
+              <input type="date" id="todoDeadline" class="form-control" required aria-required="true">
             </div>
 
-            <div class="mb-3">
-              <label class="form-label">How important is your item?</label>
+            <fieldset class="mb-3">
+              <legend class="form-label">How important is your item?</legend>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="importance" value="low" checked>
-                <label class="form-check-label">Low</label>
+                <input class="form-check-input" type="radio" name="importance" value="low" id="importanceLow" checked>
+                <label class="form-check-label" for="importanceLow">Low</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="importance" value="medium">
-                <label class="form-check-label">Medium</label>
+                <input class="form-check-input" type="radio" name="importance" value="medium" id="importanceMed">
+                <label class="form-check-label" for="importanceMed">Medium</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="importance" value="high">
-                <label class="form-check-label">High</label>
+                <input class="form-check-input" type="radio" name="importance" value="high" id="importanceHigh">
+                <label class="form-check-label" for="importanceHigh">High</label>
               </div>
-            </div>
+            </fieldset>
 
             <button type="submit" class="btn btn-success w-100">Submit</button>
           </form>
-        </div>
+        </section>
 
         <!-- Table Column -->
-        <div class="col-lg-8 col-md-12">
+        <section class="col-lg-8 col-md-12" aria-labelledby="tableHeading">
+          <h2 id="tableHeading" class="visually-hidden">Your Todos</h2>
           <div class="table-wrapper">
-            <table id="todoTable" class="table table-bordered table-hover">
+            <table id="todoTable" class="table table-bordered table-hover" role="table" aria-describedby="tableDesc">
+              <caption id="tableDesc" class="visually-hidden">List of todo items with name, deadline, importance, days left, and actions</caption>
               <colgroup>
                 <col style="width: 25%">
                 <col style="width: 20%">
@@ -68,18 +71,19 @@
               </colgroup>
               <thead class="table-light">
                 <tr>
-                  <th>Name</th>
-                  <th>Deadline</th>
-                  <th>Importance</th>
-                  <th>Days Left</th>
-                  <th>Actions</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Deadline</th>
+                  <th scope="col">Importance</th>
+                  <th scope="col">Days Left</th>
+                  <th scope="col">Actions</th>
                 </tr>
               </thead>
               <tbody id="todoTbody"></tbody>
             </table>
           </div>
-        </div>
+        </section>
       </div>
     </main>
   </body>
 </html>
+

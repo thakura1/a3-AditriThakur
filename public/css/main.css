@@ -63,25 +63,43 @@ html, body {
   background-color: #727A5C;
   border-color: #727A5C;
 }
-.btn-primary:hover {
+.btn-primary:hover, .btn-primary:focus {
   background-color: #5e6649;
   border-color: #5e6649;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(82, 92, 65, 0.5);
 }
 .btn-success {
   background-color: #727A5C;
   border-color: #727A5C;
 }
-.btn-success:hover {
+.btn-success:hover, .btn-success:focus {
   background-color: #5e6649;
   border-color: #5e6649;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(82, 92, 65, 0.5);
 }
 .btn-danger {
   background-color: #A85C5C;
   border-color: #A85C5C;
+}
+.btn-danger:hover, .btn-danger:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(168, 92, 92, 0.5);
 }
 
 /* Table scroll for large data */
 .table-wrapper {
   max-height: 70vh;
   overflow-y: auto;
+}
+
+/* Login card */
+.login-card {
+  background-color: #F9FAF5;
+  border: 2px solid #727A5C;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
