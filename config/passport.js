@@ -7,6 +7,9 @@ const callbackFromEnv =
   process.env.GITHUB_CALLBACK ||
   'http://localhost:3000/auth/github/callback';
 
+console.log('GITHUB_CALLBACK_URL env:', process.env.GITHUB_CALLBACK_URL);
+console.log('Final callbackFromEnv:', callbackFromEnv);
+
 if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
   console.warn('⚠️  Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET in env!');
 }
