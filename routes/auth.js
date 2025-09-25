@@ -6,13 +6,13 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 
 // Redirect
 router.get("/github/callback", 
-  passport.authenticate("github", { failureRedirect: "/login" }),
-  (req, res) => res.redirect("/")
+  passport.authenticate("github", { failureRedirect: "/" }),
+  (req, res) => res.redirect("/app")
 );
 
 // Logout
 router.get("/logout", (req, res) => {
-  req.logout(() => res.redirect("/login"));
+  req.logout(() => res.redirect("/"));
 });
 
 module.exports = router;

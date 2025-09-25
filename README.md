@@ -120,9 +120,12 @@ Sample Readme (delete the above when you're ready to submit, and modify the belo
 
 Your Render (or alternative server) link e.g. http://a3-joshua-cuneo.render.me
 
-Include a very brief summary of your project here. Images are encouraged, along with concise, high-level text. Be sure to include:
+This web application is for managing personal todo list items. It allows users to log in via GitHub, create, update, and delete tasks, and tag deadlines with importance levels.
 
-- the goal of the application
+The main goal of this application is to provide a secure and easy-to-do todo list application with user-specific data.
+
+Some challenegs I faced were implementing session-based authentication, ensuring todos are linked correctly to logged-in users, and handling asynchronous database operations. Implementing session-based authentication with GitHub OAuth required careful handling of express-session and passport to ensure users stayed logged in. I also had to link todos correctly to the logged-in user in MongoDB, which involved debugging null-user entries and ensuring all CRUD operations respected the authenticated session. Finally, handling asynchronous database operations and coordinating them with the frontend form submissions required careful use of async/await to ensure newly created todos appeared immediately for the correct user.
+
 - challenges you faced in realizing the application
 - what authentication strategy you chose to use and why (choosing one because it seemed the easiest to implement is perfectly acceptable)
 - what CSS framework you used and why
