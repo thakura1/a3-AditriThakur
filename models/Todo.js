@@ -22,7 +22,7 @@ todoSchema.virtual("daysLeft").get(function () {
 todoSchema.set("toJSON", {
   virtuals: true,
   transform: (_doc, ret) => {
-    ret.id = String(ret._id);
+    ret.id = ret._id.toString(); 
     delete ret._id;
     delete ret.__v;
   },

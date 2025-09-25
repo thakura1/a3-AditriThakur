@@ -6,12 +6,10 @@ const todoForm = document.getElementById("TodoForm");
 const todoTbody = document.querySelector("#todoTbody");
 const usernameDisplay = document.getElementById("usernameDisplay");
 
-// Check user authentication
+// Check authentication
 async function checkAuth() {
   try {
-    // Request user info, include cookies
     const res = await fetch("/me", { credentials: "include" });
-    // If unauthorized, only show login
     if (res.status === 401) {
       loginLink.style.display = "inline-block";
       logoutBtn.style.display = "none";
@@ -20,12 +18,10 @@ async function checkAuth() {
     }
 
     const data = await res.json();
-    // Hide login
     if (data.loggedIn) {
       loginLink.style.display = "none";
       logoutBtn.style.display = "inline-block";
       todoApp.style.display = "block";
-      // Display Username
       if (usernameDisplay) usernameDisplay.textContent = data.username;
       fetchTodosAndRender();
     } else {
@@ -40,35 +36,34 @@ async function checkAuth() {
 
 // Logout
 logoutBtn.addEventListener("click", async () => {
-  // request log out, send cookies, hide everything except loggin
   await fetch("/auth/logout", { credentials: "include" });
   loginLink.style.display = "inline-block";
   logoutBtn.style.display = "none";
   todoApp.style.display = "none";
 });
 
-// CRUD functions
+// Fetch todos and render table
 async function fetchTodosAndRender() {
   const res = await fetch("/todos", { credentials: "include" });
-  if (res.status === 401) return checkAuth(); // Not authenticated
+  if (res.status === 401) return checkAuth();
   const data = await res.json();
   renderTable(data.todos || []);
 }
 
+// Render table
 function renderTable(todos) {
-  todoTbody.innerHTML = ""; // Clear
+  todoTbody.innerHTML = "";
   todos.forEach((t) => {
-    const tr = document.createElement("tr"); // Row
+    const tr = document.createElement("tr");
     tr.dataset.id = t._id;
     tr.dataset.name = t.name;
     tr.dataset.deadline = t.deadline;
     tr.dataset.importance = t.importance;
 
     const tdName = document.createElement("td"); tdName.textContent = t.name;
-    const tdDeadline = document.createElement("td"); tdDeadline.textContent = t.deadline;
+    const tdDeadline = document.createElement("td"); tdDeadline.textContent = t.deadline.split("T")[0];
     const tdImportance = document.createElement("td"); tdImportance.textContent = t.importance;
-    const tdDays = document.createElement("td"); tdDays.textContent = t.daysLeft;
-    tdDays.textContent = t.daysLeft !== undefined ? t.daysLeft : "—"; // -- if no daysLeft
+    const tdDays = document.createElement("td"); tdDays.textContent = t.daysLeft ?? "—";
     const tdActions = document.createElement("td");
     tdActions.innerHTML = `<button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button>`;
 
@@ -77,41 +72,35 @@ function renderTable(todos) {
   });
 }
 
-// Edit Mode -> turn text into interactive format
+// Edit row
 function enterEditMode(tr) {
-  // Extract data
   const { id, name, deadline, importance } = tr.dataset;
   tr.innerHTML = "";
 
-  // text input for name
   const tdName = document.createElement("td");
-  const nameInput = document.createElement("input"); 
-  nameInput.type = "text"; 
-  nameInput.value = name; 
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.value = name;
   tdName.appendChild(nameInput);
 
-  // date input for deadline
   const tdDeadline = document.createElement("td");
-  const dateInput = document.createElement("input"); 
-  dateInput.type = "date"; 
-  dateInput.value = deadline; 
+  const dateInput = document.createElement("input");
+  dateInput.type = "date";
+  dateInput.value = deadline.split("T")[0];
   tdDeadline.appendChild(dateInput);
 
-  // dropdown for importance
   const tdImportance = document.createElement("td");
   const select = document.createElement("select");
   ["low", "medium", "high"].forEach(lvl => {
-    const opt = document.createElement("option"); 
-    opt.value = lvl; 
+    const opt = document.createElement("option");
+    opt.value = lvl;
     opt.textContent = lvl;
     if (lvl === importance) opt.selected = true;
     select.appendChild(opt);
   });
   tdImportance.appendChild(select);
 
-  // daysLeft is not editable, placeholder
   const tdDays = document.createElement("td"); tdDays.textContent = "—";
-  // Buttons for saving and canceling 
   const tdActions = document.createElement("td");
   tdActions.innerHTML = `<button class="save-btn">Save</button> <button class="cancel-btn">Cancel</button>`;
 
@@ -119,7 +108,9 @@ function enterEditMode(tr) {
   tr.dataset.id = id;
 }
 
+// Update todo
 async function updateTodo(id, name, deadline, importance) {
+  if (!id) return alert("Invalid ID");
   const res = await fetch("/todos/update", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -130,7 +121,9 @@ async function updateTodo(id, name, deadline, importance) {
   renderTable(data.todos || []);
 }
 
+// Delete todo
 async function deleteTodo(id) {
+  if (!id) return alert("Invalid ID");
   const res = await fetch("/todos/delete", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -141,15 +134,13 @@ async function deleteTodo(id) {
   renderTable(data.todos || []);
 }
 
+// Submit form
 async function submit(event) {
   event.preventDefault();
-
-  // Get Data
   const name = document.querySelector("#todoName").value.trim();
   const deadline = document.querySelector("#todoDeadline").value;
   const importance = document.querySelector('input[name="importance"]:checked').value;
 
-  // Send to server
   const res = await fetch("/todos/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -162,23 +153,23 @@ async function submit(event) {
   document.querySelector('input[name="importance"][value="low"]').checked = true;
 }
 
-// Button Modes
+// Table button events
 todoTbody.addEventListener("click", async (e) => {
   const btn = e.target;
   const tr = btn.closest("tr");
   if (!tr) return;
 
-  if (btn.classList.contains("delete-btn")) await deleteTodo(tr.dataset.id);
+  const id = tr.dataset.id;
+
+  if (btn.classList.contains("delete-btn")) await deleteTodo(id);
   if (btn.classList.contains("edit-btn")) enterEditMode(tr);
   if (btn.classList.contains("cancel-btn")) fetchTodosAndRender();
   if (btn.classList.contains("save-btn")) {
     const [nameInput, dateInput, select] = tr.querySelectorAll("input, select");
-    await updateTodo(tr.dataset.id, nameInput.value.trim(), dateInput.value, select.value);
+    await updateTodo(id, nameInput.value.trim(), dateInput.value, select.value);
   }
 });
 
-// Event listener
-document.getElementById("TodoForm").addEventListener("submit", submit);
-
+todoForm.addEventListener("submit", submit);
 window.onload = checkAuth;
 

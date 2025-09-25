@@ -3,15 +3,12 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Todo = require('../models/Todo');
 
-// GET /todos 
+// GET /todos
 router.get('/', async (req, res) => {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
+  if (!req.isAuthenticated || !req.isAuthenticated()) return res.status(401).json({ error: 'Not authenticated' });
+
   try {
-    const todos = await Todo.find({ user: req.user._id })
-      .sort({ deadline: 1 })
-      .lean({ virtuals: true });
+    const todos = await Todo.find({ user: req.user._id }).sort({ deadline: 1 }).lean({ virtuals: true });
     res.json({ todos });
   } catch (err) {
     console.error('Failed to fetch todos:', err);
@@ -19,28 +16,17 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /todos/submit 
+// POST /todos/submit
 router.post('/submit', async (req, res) => {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
+  if (!req.isAuthenticated || !req.isAuthenticated()) return res.status(401).json({ error: 'Not authenticated' });
+
   try {
     const { name, deadline, importance } = req.body;
-    if (!name || !deadline || !importance) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
+    if (!name || !deadline || !importance) return res.status(400).json({ error: 'Missing required fields' });
 
-    const todo = await Todo.create({
-      user: req.user._id,
-      name,
-      deadline,
-      importance,
-    });
+    await Todo.create({ user: req.user._id, name, deadline: new Date(deadline), importance });
 
-    const todos = await Todo.find({ user: req.user._id })
-      .sort({ deadline: 1 })
-      .lean({ virtuals: true });
-
+    const todos = await Todo.find({ user: req.user._id }).sort({ deadline: 1 }).lean({ virtuals: true });
     res.json({ todos });
   } catch (err) {
     console.error('Failed to create todo:', err);
@@ -50,30 +36,23 @@ router.post('/submit', async (req, res) => {
 
 // POST /todos/update
 router.post('/update', async (req, res) => {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
+  if (!req.isAuthenticated || !req.isAuthenticated()) return res.status(401).json({ error: 'Not authenticated' });
 
   try {
     const { id, name, deadline, importance } = req.body;
-    if (!id || !name || !deadline || !importance) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
+    if (!id || !name || !deadline || !importance) return res.status(400).json({ error: 'Missing required fields' });
+
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ error: 'Invalid ID' });
 
     const updated = await Todo.findOneAndUpdate(
-      { _id: mongoose.Types.ObjectId(id), user: req.user._id },
+      { _id: id, user: req.user._id },
       { name, deadline: new Date(deadline), importance },
       { new: true }
     );
 
-    if (!updated) {
-      return res.status(404).json({ error: 'Todo not found' });
-    }
+    if (!updated) return res.status(404).json({ error: 'Todo not found' });
 
-    const todos = await Todo.find({ user: req.user._id })
-      .sort({ deadline: 1 })
-      .lean({ virtuals: true });
-
+    const todos = await Todo.find({ user: req.user._id }).sort({ deadline: 1 }).lean({ virtuals: true });
     res.json({ todos });
   } catch (err) {
     console.error('Failed to update todo:', err);
@@ -83,19 +62,16 @@ router.post('/update', async (req, res) => {
 
 // POST /todos/delete
 router.post('/delete', async (req, res) => {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
+  if (!req.isAuthenticated || !req.isAuthenticated()) return res.status(401).json({ error: 'Not authenticated' });
+
   try {
     const { id } = req.body;
     if (!id) return res.status(400).json({ error: 'Missing todo ID' });
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ error: 'Invalid ID' });
 
     await Todo.deleteOne({ _id: id, user: req.user._id });
 
-    const todos = await Todo.find({ user: req.user._id })
-      .sort({ deadline: 1 })
-      .lean({ virtuals: true });
-
+    const todos = await Todo.find({ user: req.user._id }).sort({ deadline: 1 }).lean({ virtuals: true });
     res.json({ todos });
   } catch (err) {
     console.error('Failed to delete todo:', err);
@@ -103,5 +79,6 @@ router.post('/delete', async (req, res) => {
   }
 });
 
-
 module.exports = router;
+
+
