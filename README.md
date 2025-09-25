@@ -116,7 +116,7 @@ Yes, so long as those are IN ADDITION TO Express, MongoDB, and a CSS framework o
 Sample Readme (delete the above when you're ready to submit, and modify the below so with your links and descriptions)
 ---
 
-## Your Web Application Title
+## Todo Application
 https://todo-application-production-e8d9.up.railway.app/app
 
 This web application is for managing personal todo list items. It allows users to log in via GitHub, create, update, and delete tasks, and tag deadlines with importance levels.
@@ -125,6 +125,19 @@ The main goal of this application is to provide a secure and easy-to-do todo lis
 
 Some challenegs I faced were implementing session-based authentication, ensuring todos are linked correctly to logged-in users, and handling asynchronous database operations. Implementing session-based authentication with GitHub OAuth required careful handling of express-session and passport to ensure users stayed logged in. I also had to link todos correctly to the logged-in user in MongoDB, which involved debugging null-user entries and ensuring all CRUD operations respected the authenticated session. Finally, handling asynchronous database operations and coordinating them with the frontend form submissions required careful use of async/await to ensure newly created todos appeared immediately for the correct user.
 
+I used Bootstrap 5 as the main CSS framework. Bootstrap allowed me to quickly implement a professional design aesthetic. I also applied a custom color scheme and font family to match my design preference.I also styled buttons (btn-primary, btn-success, btn-danger) to fit the theme colors.
+
+I used the following middleware in my application:
+express.json(): Parses incoming JSON requests and makes the data available under req.body.
+express.urlencoded({ extended: true }): Parses URL-encoded form data.
+express.static(): Serves static files like HTML, CSS, and JS.
+express-session: Manages server-side session storage for logged-in users.
+connect-mongo: Stores session data in MongoDB so sessions persist across server restarts.
+passport.initialize(): Initializes Passport authentication for the app.
+passport.session(): Enables session-based authentication with Passport.
+(checkAuth in routes): Verifies if the user is logged in before allowing access to todo routes and returns a 401 Unauthorized if not authenticated.
+
+Adjusted the todo form and login card with shadows and rounded corners for a more polished look.
 - challenges you faced in realizing the application
 - what authentication strategy you chose to use and why (choosing one because it seemed the easiest to implement is perfectly acceptable)
 - what CSS framework you used and why
@@ -132,7 +145,15 @@ Some challenegs I faced were implementing session-based authentication, ensuring
 - a list of Express middleware packages you used and a short (one sentence) summary of what each one does. If you use a custom function, please add a little more detail about what it does.
 
 ## Technical Achievements
-- **Tech Achievement 1**: I used OAuth authentication via the GitHub strategy
+- **Tech Achievement 1**: I used MongoDB Atlas, Mongoose, and connect-mongo to manage user-specific data and sessions securely and reliably.
+
+## Technical Achievements
+- **Tech Achievement 2**: I implemented OAuth authentication via GitHub, providing secure login without password management.
+
+## Technical Achievements
+- **Tech Achievement 3**: I deployed the application on Railway, demonstrating an alternative hosting solution to Render.
 
 ### Design/Evaluation Achievements
-- **Design Achievement 1**: I followed the following tips from the W3C Web Accessibility Initiative...
+- **Design Achievement 1**: I used Bootstrap 5 for styling the website, only overriding some components with custom CSS to maintain a consistent color scheme and font style.
+
+- **Design Achievement 2**: I followed W3C Web Accessibility Initiative tips, such as using semantic HTML (<header>, <main>, <form>), proper form labels, and ensuring sufficient color contrast.
